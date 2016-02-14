@@ -80,6 +80,9 @@ func readSudoku(r io.Reader) (Sudoku, error) {
 			if err != nil || i < 0 || i > 9 {
 				return sudoku, fmt.Errorf("invalid input element: '%s'", elem)
 			}
+			if i > 0 && sudoku.has(y, x, i) {
+				return sudoku, fmt.Errorf("conflicting element in row %d, column %d: %d", y+1, x+1, i)
+			}
 			sudoku.set(y, x, i)
 		}
 
@@ -119,29 +122,34 @@ func solve(sudoku Sudoku) (Sudoku, error) {
 		}
 	}
 
-	if bestMissing == 1 {
-		for i := 1; i <= 9; i++ {
-			if !sudoku.has(bestY, bestX, i) {
-				sudoku.set(bestY, bestX, i)
-				break
+	for i := 1; i <= 9; i++ {
+		if !sudoku.has(bestY, bestX, i) {
+			old := sudoku
+			sudoku.set(bestY, bestX, i)
+			solution, err := solve(sudoku)
+			if err != nil {
+				sudoku = old
+				continue
 			}
+			return solution, nil
 		}
-		x, err := solve(sudoku)
-		return x, err
-	} else {
-		return sudoku, nil
 	}
-	return sudoku, nil
+	return sudoku, fmt.Errorf("unsolveable")
 }
 
 func main() {
 	sudoku, err := readSudoku(os.Stdin)
 	if err != nil {
-		fmt.Println(err)
+		quit(err)
 	}
 	solution, err := solve(sudoku)
 	if err != nil {
-		os.Exit(1)
+		quit(err)
 	}
 	fmt.Println(solution.String())
+}
+
+func quit(err error) {
+	fmt.Println(err)
+	os.Exit(1)
 }
