@@ -112,7 +112,7 @@ func solve(sudoku Sudoku) (Sudoku, error) {
 			if field != 0 {
 				continue
 			}
-			var missing int = 9
+			missing := 9
 			for i := 1; i <= 9; i++ {
 				if sudoku.has(y, x, i) {
 					missing--
