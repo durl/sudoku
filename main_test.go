@@ -42,6 +42,16 @@ func TestSolveWithGuessing(t *testing.T) {
 	}
 }
 
+func TestHard(t *testing.T) {
+	solution, err := solveFile("test/hard.in")
+	if err != nil {
+		t.Errorf("Could not solve: %s", err.Error())
+	}
+	if readFile("test/hard.solution") != solution.String() {
+		t.Errorf("erroneus solution")
+	}
+}
+
 func TestConflictError(t *testing.T) {
 	f, _ := os.Open("test/conflict.in")
 	_, err := readSudoku(f)

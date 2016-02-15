@@ -77,7 +77,7 @@ func readSudoku(r io.Reader) (Sudoku, error) {
 		}
 
 		elem := scanner.Text()
-		if elem == "_" {
+		if elem == "_" || elem == "." {
 			sudoku.set(y, x, 0)
 		} else {
 			i, err := strconv.Atoi(elem)
