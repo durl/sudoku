@@ -66,3 +66,13 @@ func TestUnsolveableError(t *testing.T) {
 		t.Errorf("not recognized as unsolveable")
 	}
 }
+
+func TestSolveEmpty(t *testing.T) {
+	solution, err := solveFile("test/empty.in")
+	if err != nil {
+		t.Errorf("Could not solve: %s", err.Error())
+	}
+	if readFile("test/empty.solution") != solution.String() {
+		t.Errorf("erroneus solution")
+	}
+}
